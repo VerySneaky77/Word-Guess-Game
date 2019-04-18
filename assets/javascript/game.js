@@ -49,7 +49,6 @@ document.onkeyup = function (event) {
                 };
                 // Show progress
                 wordVeil = temp;
-                console.log(wordVeil);
 
                 // Word match, end session
                 if (!wordVeil.includes("_")) {
