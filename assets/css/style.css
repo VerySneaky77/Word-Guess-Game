@@ -1,3 +1,40 @@
 body {
-    background-image: url("assets/images/tallgrass.jpg");
+    background-image: none;
+    background-image: url("../images/tallgrass.jpg");
+    background-color: brown;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+h1, h2 {
+    background: rgba(0, 0, 0, 0.7);
+    width: 90%;
+    margin: 10px auto;
+    padding: 4px;
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+    overflow: auto;
+}
+
+p {
+    width: 100%;
+}
+
+#outcome-ui {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    padding: 4px;
+    width: 90%;
+    margin: 20px auto;
+    color: white;
+}
+
+#outcome-ui p {
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+#word {
+    letter-spacing: 1rem;
 }

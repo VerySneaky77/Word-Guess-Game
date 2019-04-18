@@ -1,52 +1,115 @@
 const guessMax = 10;
-const wordBank = [
-    "lion", "tiger", "bear", "wildebeast",
-    "platypus", "hawk", "eagle", "vulture",
-    "kangaroo", "hyena", "antelope", "elephant",
-    "rhinocerous", "hippopotamus", "cheetah", "meerkat"
-];
+const wordBank = ["lion", "tiger", "ant", "baboon", "beetle", "wildebeast", "platypus", "hawk", "eagle", "vulture", "kangaroo", "hyena", "antelope", "elephant", "rhinocerous", "hippopotamus", "cheetah", "meerkat"];
 
-var guessOut = document.getElementById("guesses");
+// HTML elems
+var guessOut = document.getElementById("guess-count");
 var wordOut = document.getElementById("word");
-var guessCurr;
-var wordCurr;
-var wordToGo;
+var postOut = document.getElementById("post-outcome");
+var guessBankShow = document.getElementById("guess-bank");
 
-pickUpWord(" ");
-updateUI("");
+var guessBank = [];
+var guessCurr = "";
+var wordCurr = "";
+var wordVeil = "";
 
-function pickUpWord(wordPrev) {
-    do {
-        wordCurr = wordBank[Math.floor((Math.random) * wordBank.length)];
-    } while (wordCurr === wordPrev);
+var wordCurrIndex = -1;
+var wordPrevIndex = -1;
+
+// Indicates end of game if 0 or 1
+var endGame = -1;
+
+// Game startup
+resetWord();
+updateUI();
+
+// Keypress listening
+document.onkeyup = function (event) {
+    // There are still attempts left to guess
+    if (guessCurr > 0 && event.which > 64 && event.which < 91) {
+        // Check if previously guessed
+        if (!guessBank.includes(event.key)) {
+            var indexCheck = wordCurr.includes(event.key);
+
+            guessBank.push(event.key);
+
+            if (indexCheck) {
+                var temp = "";
+
+                // Rewrite corrected guessed letters
+                for (var i = 0; i < wordCurr.length; i++) {
+                    if (wordCurr[i] === event.key) {
+                        temp += event.key;
+                    }
+                    else if (wordVeil[i] !== "_") {
+                        temp += wordVeil[i];
+                    }
+                    else {
+                        temp += "_";
+                    }
+                };
+                // Show progress
+                wordVeil = temp;
+                console.log(wordVeil);
+
+                // Word match, end session
+                if (!wordVeil.includes("_")) {
+                    guessCurr = 0;
+                    gameEnd(true);
+                }
+            }
+            else { guessCurr--; }
+        }
+
+        // Out of guesses, loss, end
+        if ((guessCurr === 0) && (wordVeil !== wordCurr)) {
+            wordVeil = wordCurr;
+            gameEnd(false);
+        }
+        updateUI();
+    }
+    // Reset session
+    else if (guessCurr === 0) {
+        resetWord();
+        updateUI();
+    }
+}
+
+// Reset word for guessing and player parameters
+function resetWord() {
+    while (wordCurrIndex === wordPrevIndex) {
+        wordCurrIndex = Math.floor((Math.random()) * (wordBank.length - 1));
+    }
+    wordCurr = wordBank[wordCurrIndex];
+    wordVeil = "";
+    guessCurr = guessMax;
+    guessBank = [];
 
     for (var i = 0; i < wordCurr.length; i++) {
-        wordToGo = wordToGo + '_';
+        wordVeil = wordVeil + "_";
     }
-
-    guessCur = guessMax;
+    wordPrevIndex = wordCurrIndex;
+    postOut.innerText = "";
 }
 
-function updateUI() {
-    wordOut.innerText = wordToGo;
-    guessOut.innerText = guessCurr;
-}
-
-document.onkeyup = function (event) {
-    var choice = event.key;
-
-    if (guessCurr > 0) {
-        if (wordToGo.indexOf("_") > -1) {
-            ;
-        }
-        else if (wordBank.indexOf(event.key) > -1) {
-            guessCurr--;
-        }
-        else { guessCur--; }
+function gameEnd(win) {
+    if (win) {
+        postOut.innerText = "Good Job! Press any key to reset.";
     }
     else {
-        j;
+        postOut.innerText = "Better luck next time. Press any key to reset.";
     }
+}
 
-    updateUI();
+// Update all HTML, show player progress
+function updateUI() {
+    var showGuess = "";
+
+    wordOut.innerText = wordVeil;
+    guessOut.innerText = guessCurr;
+    guessBankShow.innerText = "";
+    guessBank.forEach(function (guess) {
+        showGuess += " " + guess.toUpperCase() + " ";
+    })
+
+    guessBankShow.innerText = showGuess;
 }
